@@ -17,7 +17,7 @@ TinyReactApiは、ServiceWorkerを活用してフレームワークによるビ�
 
 ## API機能
 
-TinyReactApiは、Service Workerを利用して、ブラウザ内であたかもWebAPIを実行したかのような動作をさせることができます。
+TinyReactApiは、ServiceWorkerを利用して、ブラウザ内であたかもWebAPIを実行したかのような動作をさせることができます。
 `/api`ディレクトリへのリクエストをAPIリクエストとして扱い、`api.js`内のfetch関数を呼び出す形でAPIリクエストを処理します。
 CloudFlare WorkersのようなEdge Functionのモックやテストでの利用を想定しています。
 
