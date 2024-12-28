@@ -2,9 +2,9 @@
 
 ## 概要
 
-TinyReactApiは、ServiceWorkerを利用して、ブラウザ上でTypeScriptやTSXをトランスパイル(Babel Standaloneを利用)してReactアプリケーションを実行するためのスクリプト群です。
+TinyReactApiは、ServiceWorkerを活用してフレームワークによるビルドなしでブラウザ上でTypeScriptやTSXをトランスパイル(Babel Standaloneを利用)してReactアプリケーションを実行するためのスクリプト群です。
 
-ブラウザの仕様上、単純な静的HTTPサーバーが必要ですが、それ以外は基本的にブラウザ上で完結します。
+ブラウザの仕様上リクエストされたファイルを返すだけの単純な静的HTTPサーバーが必要ですが、それ以外は基本的にブラウザ上で完結します。
 
 ## 使い方
 
