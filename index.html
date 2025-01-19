@@ -13,10 +13,23 @@
       }
     }
   </script>
-  <script type="module" src="./swload.js"></script>
   <script type="module">
+    // ローディングダイアログを表示
     const loading = document.getElementById('loading');
     loading.showModal();
+
+    // サービスワーカー登録前にページロードがされた場合、トランスパイルせずエラーになるので登録後にリロードする。
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      window.location.reload(true);
+    });
+
+    // サービスワーカー登録
+    if (!navigator.serviceWorker.controller) {
+      navigator.serviceWorker.register('sw.js', { type: "module" }).then(() => {
+      }).catch(error => {
+        console.error('Service Worker registration failed:', error);
+      });
+    }
   </script>
   <title>React Application</title>
 </head>
@@ -28,13 +41,17 @@
   </dialog>
   <div id="root"></div>
   <script type="module">
+    // ReactライブラリとAppコンポーネントをロード
     import React from "react";
     import { createRoot } from "react-dom/client";
     import App from "./App.tsx";
 
+    // ルートコンポーネントをレンダリング
     const container = document.getElementById('root');
     const root = createRoot(container);
     root.render(React.createElement(App));
+
+    // ローディングダイアログを非表示
     loading.close();
   </script>
 </body>

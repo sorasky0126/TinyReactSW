@@ -1,11 +1,11 @@
 import 'https://cdn.jsdelivr.net/npm/@babel/standalone@7/babel.min.js';
-import api from './api.js';
 
 // 追加するヘッダー
 const appendHeaders = {
   'Cross-Origin-Embedder-Policy': 'require-corp',
   'Cross-Origin-Opener-Policy': 'same-origin',
-  'Cross-Origin-Resource-Policy': 'cross-origin'
+  'Cross-Origin-Resource-Policy': 'cross-origin',
+  'Cache-Control': 'no-store',
 };
 
 // トランスパイルを行う拡張子の配列
@@ -22,13 +22,7 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', async event => {
   const { request } = event;
-  if (request.url.includes('/api/')) {
-    //apiディレクトリにアクセスした場合はAPIのリクエストとして扱う
-    event.respondWith(api.fetch(request));
-  } else {
-    //それ以外のリクエストはTypeScriptトランスパイルリクエストとして扱う
-    event.respondWith(handleJSRequest(request));
-  }
+  event.respondWith(handleJSRequest(request));
 });
 
 // TypeScriptトランスパイルリクエストを処理
@@ -92,12 +86,11 @@ const transpileToJS = (tsCode, url) => {
   // TypeScriptのプリセットを登録
   if (!Object.hasOwn(Babel.availablePresets, 'tsx')) {
     Babel.registerPreset('tsx', {
-      presets: [
-        [Babel.availablePresets['typescript'],
+      presets: [[
+        Babel.availablePresets['typescript'],
         { allExtensions: true, isTSX: true }
-        ]],
-    },
-    );
+      ]],
+    });
   }
 
   // urlからファイル名を取得
@@ -112,12 +105,8 @@ const transpileToJS = (tsCode, url) => {
       filename: fname
     }).code;
   } catch (error) {
-    // トランスパイルエラーが発生した場合はブラウザにエラーメッセージを出力するJavaScriptコードを返す
-    jsCode += 'const message = `' + error.message + '`;';
-    jsCode += 'document.body.style.backgroundColor = "lightgray";';
-    jsCode += 'document.body.innerHTML = `<h1 style="color: red;">Transpile error</h1>`;';
-    jsCode += 'document.body.innerHTML += `<pre>${message}</pre>`;';
-    jsCode += 'console.error(`Transpile error: ${message}`);';
+    // トランスパイルエラーが発生した場合は例外を出力するJavaScriptコードを返す
+    jsCode += 'throw new Error(`' + error.message + '`);';
   }
 
   return jsCode;
